@@ -2,7 +2,7 @@
   "name": "nodejs-hw",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "start": "nodemon src/server.js",
@@ -59,7 +59,6 @@
     "find-up": "^5.0.0",
     "flat-cache": "^6.1.23",
     "flatted": "^3.4.4",
-    "fsevents": "^2.3.3",
     "glob-parent": "^5.1.2",
     "has-flag": "^3.0.0",
     "hashery": "^1.5.1",

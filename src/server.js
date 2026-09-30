@@ -1,53 +1,34 @@
 import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import pino from 'pino-http';
+
+import { connectMongoDB } from './db/connectMongoDB';
+import { notFoundHandler } from './middleware/notFoundHandler';
+import { logger } from './middleware/logger';
+import { errorHandler } from './middleware/errorHandler';
+import { Router } from 'express';
+import { deleteNote, getAllNotes, updateNote } from './routes/notesRoutes';
+import { createNote } from './routes/notesRoutes';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const router = Router();
 
 app.use(express.json());
 app.use(cors());
-app.use(
-  pino({
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
-        translateTime: 'HH:MM:ss',
-        ignore: 'pid,hostname',
-        messageFormat:
-          '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-        hideObject: true,
-      },
-    },
-  }),
-);
+app.use(logger);
 
-app.get('/notes', (req, res) => {
-  res.status(200).json({
-    message: 'Retrieved all notes',
-  });
-});
+router.get('/notes/', getAllNotes);
+router.get('/notes/:noteId');
+router.post('/notes/', createNote);
+router.delete('/notes/:noteId', deleteNote);
+router.patch('/notes/:noteId', updateNote);
 
-app.get('/notes/:noteId', (req, res) => {
-  const noteId = req.params.noteId;
-  res.status(200).json({
-    message: `Retrieved note with ID: ${noteId}`,
-  });
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
-app.use((req, res) => {
-  res.status(404).json({
-    message: 'Route not found',
-  });
-});
+await connectMongoDB();
 
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message });
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

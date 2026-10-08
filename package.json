@@ -36,6 +36,7 @@
     "brace-expansion": "^5.0.12",
     "braces": "^3.0.3",
     "cacheable": "^2.5.0",
+    "celebrate": "^16.0.0",
     "chokidar": "^3.6.0",
     "cors": "^2.8.6",
     "cross-spawn": "^7.0.6",

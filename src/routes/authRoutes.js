@@ -8,7 +8,7 @@ import {
 import {
   loginUserSchema,
   registerUserSchema,
-} from '../validations/authValidation';
+} from '../validations/authValidation.js';
 import { celebrate } from 'celebrate';
 
 const router = Router();

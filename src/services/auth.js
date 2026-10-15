@@ -1,6 +1,6 @@
-import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/time';
+import { FIFTEEN_MINUTES, ONE_DAY } from '../constants/time.js';
 import crypto from 'crypto';
-import { Session } from '../models/session';
+import { Session } from '../models/session.js';
 
 export const createSession = async (userId) => {
   const accessToken = crypto.randomUUID();
@@ -16,21 +16,21 @@ export const createSession = async (userId) => {
 };
 
 export const setSessionCookies = (res, session) => {
-  res.cookies('accessToken', session.accessToken, {
+  res.cookie('accessToken', session.accessToken, {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
     maxAge: FIFTEEN_MINUTES,
   });
 
-  res.cookies('refreshToken', session.refreshToken, {
+  res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
     maxAge: ONE_DAY,
   });
 
-  res.cookies('sessionId', session._id, {
+  res.cookie('sessionId', session._id, {
     httpOnly: true,
     secure: true,
     sameSite: 'none',

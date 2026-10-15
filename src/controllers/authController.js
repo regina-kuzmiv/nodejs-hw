@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
-import { User } from '../models/user';
-import { createSession, setSessionCookies } from '../services/auth';
-import { Session } from '../models/session';
+import { User } from '../models/user.js';
+import { createSession, setSessionCookies } from '../services/auth.js';
+import { Session } from '../models/session.js';
 
 export const registerUser = async (req, res) => {
   const { email, password } = req.body;
@@ -14,13 +14,14 @@ export const registerUser = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newSession = await createSession(newUser._id);
-  setSessionCookies(res, newSession);
-
   const newUser = await User.create({
     email,
     password: hashedPassword,
   });
+
+  const newSession = await createSession(newUser._id);
+
+  setSessionCookies(res, newSession);
 
   res.status(201).json(newUser);
 };
@@ -54,7 +55,7 @@ export const refreshUserSession = async (req, res) => {
     throw createHttpError(401, 'Missing session credentials');
   }
 
-  const session = Session.findOne({ _id: sessionId, refreshToken });
+  const session = await Session.findOne({ _id: sessionId, refreshToken });
 
   if (!session) {
     throw createHttpError(401, 'Session not found');

@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { User } from '../models/user.js';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
+import jwt from 'jsonwebtoken';
 
 export const registerUser = async (req, res) => {
   const { email, password } = req.body;
@@ -92,4 +93,22 @@ export const logoutUser = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+export const requestResetEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(200).json({
+      message: 'Password reset email sent successfully',
+    });
+  }
+
+  const resetToken = jwt.sign(
+    { sub: user._id, email },
+    process.env.JWT_SECRET,
+    { expiresIn: '15m' },
+  );
 };
